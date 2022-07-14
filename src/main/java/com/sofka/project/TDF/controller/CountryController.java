@@ -27,12 +27,25 @@ public class CountryController {
     }
 
     @DeleteMapping(path = "/{id}")
-    public void deleteCountry(@PathVariable Long id){
+    public void deleteCountry(@PathVariable("id") Long id){
         countryService.deleteCountry(id);
     }
 
     @GetMapping(path = "/{id}")
-    public Optional<Country> getCountryByID(@PathVariable Long id){
+    public Optional<Country> getCountryByID(@PathVariable("id") Long id){
         return countryService.findCountryById(id);
+    }
+
+    @PutMapping(path = "/{id}")
+    public Country updateCountryById(@PathVariable("id") Long id, @RequestBody Country countryUpdated){
+        return countryService.findCountryById(id)
+                .map(country ->{
+                    country.setName_country(countryUpdated.getName_country());
+                    country.setCode_country(countryUpdated.getCode_country());
+                    return countryService.saveCountry(country);
+                }).orElseGet(() ->{
+                    countryUpdated.setId_country(id);
+                    return countryService.saveCountry(countryUpdated);
+                });
     }
 }
