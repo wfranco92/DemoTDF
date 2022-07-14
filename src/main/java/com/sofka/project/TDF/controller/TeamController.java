@@ -1,8 +1,6 @@
 package com.sofka.project.TDF.controller;
 
-import com.sofka.project.TDF.model.Country;
 import com.sofka.project.TDF.model.Team;
-import com.sofka.project.TDF.service.CountryService;
 import com.sofka.project.TDF.service.TeamService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
