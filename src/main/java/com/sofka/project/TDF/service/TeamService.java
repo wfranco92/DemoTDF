@@ -1,5 +1,6 @@
 package com.sofka.project.TDF.service;
 
+import com.sofka.project.TDF.model.Country;
 import com.sofka.project.TDF.model.Team;
 import com.sofka.project.TDF.repository.TeamRepositroy;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,5 +29,11 @@ public class TeamService {
 
     public Optional<Team> findTeamById(Long id ){
         return teamRepositroy.findById(id);
+    }
+
+    public List<Team> getTeamsByCountry(Long id){
+        Country country = new Country();
+        country.setId_country(id);
+        return teamRepositroy.findByCountry(country);
     }
 }

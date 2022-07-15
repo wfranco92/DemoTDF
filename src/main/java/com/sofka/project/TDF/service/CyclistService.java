@@ -1,5 +1,6 @@
 package com.sofka.project.TDF.service;
 
+import com.sofka.project.TDF.model.Country;
 import com.sofka.project.TDF.model.Cyclist;
 import com.sofka.project.TDF.repository.CyclistRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,5 +37,11 @@ public class CyclistService {
 
     public Optional<Cyclist> findCyclistById(Long id ){
         return cyclistRepository.findById(id);
+    }
+
+    public List<Cyclist> findCyclistByCountry(Long id){
+        Country country = new Country();
+        country.setId_country(id);
+        return cyclistRepository.findByCountry(country);
     }
 }

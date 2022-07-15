@@ -1,5 +1,6 @@
 package com.sofka.project.TDF.controller;
 
+import com.sofka.project.TDF.model.Country;
 import com.sofka.project.TDF.model.Team;
 import com.sofka.project.TDF.service.TeamService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,5 +60,11 @@ public class TeamController {
                     teamUpdated.setId_team(id);
                     return teamService.saveTeam(teamUpdated);
                 });
+    }
+
+    @GetMapping(path = "/country/{id}")
+    public ResponseEntity<List<Team>> getTeamsByCountry(@PathVariable("id") Long id){
+        var teamsByCountry = teamService.getTeamsByCountry(id);
+        return new ResponseEntity<List<Team>>(teamsByCountry, HttpStatus.OK);
     }
 }

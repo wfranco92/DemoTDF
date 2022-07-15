@@ -1,5 +1,6 @@
 package com.sofka.project.TDF.controller;
 
+import com.sofka.project.TDF.model.Country;
 import com.sofka.project.TDF.model.Cyclist;
 import com.sofka.project.TDF.service.CyclistService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,10 +60,16 @@ public class CyclistController {
                     cyclist.setTeam(cyclistUpdated.getTeam());
                     return cyclistService.saveCyclist(cyclist);
 
-                }).orElseGet(() ->{
+                }).orElseGet(() -> {
                     cyclistUpdated.setId_cyclist(id);
                     return cyclistService.saveCyclist(cyclistUpdated);
                 });
         return new ResponseEntity<String>("registroactualizado", HttpStatus.OK);
+    }
+
+    @GetMapping("/country/{id}")
+    public ResponseEntity<List<Cyclist>> consultCyclistByCountry(@PathVariable("id") Long id) {
+        var newCyclist = cyclistService.findCyclistByCountry(id);
+        return new ResponseEntity<List<Cyclist>>(newCyclist, HttpStatus.OK);
     }
 }
