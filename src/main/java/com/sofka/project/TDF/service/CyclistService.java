@@ -18,8 +18,16 @@ public class CyclistService {
         return cyclistRepository.findAll();
     }
 
-    public Cyclist saveCyclist(Cyclist cyclist){
-        return cyclistRepository.save(cyclist);
+    public String saveCyclist(Cyclist cyclist){
+        var ciclistActived = cyclistRepository.findByTeam(cyclist.getTeam());
+
+        if(ciclistActived.size() < 8) {
+            System.out.println(ciclistActived.size());
+            cyclistRepository.save(cyclist);
+            return "registro creado exitosamente";
+        }else{
+            return null;
+        }
     }
 
     public void deleteCyclist(Long id){

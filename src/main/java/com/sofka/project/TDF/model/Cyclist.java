@@ -4,6 +4,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 
 @Data
 @NoArgsConstructor
@@ -19,6 +21,8 @@ public class Cyclist {
     private String name_cyclist;
 
     @Column(name = "number_shirt", nullable = false, length = 3, unique = true)
+    @Max(value=999, message="Numero de camiseta no valido, debe contener maximo 3 digitos")
+    @Min(value = 1, message="Numero de camiseta no valido, debe ser mayor a 0")
     private Integer number_shirt;
 
     @ManyToOne

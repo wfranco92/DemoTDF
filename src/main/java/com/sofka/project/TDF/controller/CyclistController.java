@@ -3,6 +3,8 @@ package com.sofka.project.TDF.controller;
 import com.sofka.project.TDF.model.Cyclist;
 import com.sofka.project.TDF.service.CyclistService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,28 +19,39 @@ public class CyclistController {
     private CyclistService cyclistService;
 
     @GetMapping()
-    public List<Cyclist> getAllCyclists(){
-        return cyclistService.getAllCyclists();
+    public ResponseEntity<List<Cyclist>> getAllCyclists(){
+        var cyclists = cyclistService.getAllCyclists();
+        return new ResponseEntity<List<Cyclist>>(cyclists, HttpStatus.OK);
     }
 
     @PostMapping()
-    public Cyclist createCyclist(@RequestBody Cyclist cyclist){
-        return cyclistService.saveCyclist(cyclist);
+    public ResponseEntity<String> createCyclist(@RequestBody Cyclist cyclist){
+        var newCyclist = cyclistService.saveCyclist(cyclist);
+        if(newCyclist == null) return new ResponseEntity<String>("el team ya cuenta con el maximo de ciclistas", HttpStatus.NOT_ACCEPTABLE);
+        return new ResponseEntity<String>(newCyclist, HttpStatus.CREATED);
     }
 
     @DeleteMapping(path = "/{id}")
-    public void deleteCyclist(@PathVariable("id") Long id){
-        cyclistService.deleteCyclist(id);
+    public ResponseEntity<Cyclist> deleteCyclist(@PathVariable("id") Long id){
+
+        try {
+            cyclistService.deleteCyclist(id);
+            return new ResponseEntity<Cyclist>(HttpStatus.OK);
+        }catch(Exception e){
+            return new ResponseEntity<Cyclist>(HttpStatus.NOT_FOUND);
+        }
     }
 
     @GetMapping(path = "/{id}")
-    public Optional<Cyclist> getCyclistByID(@PathVariable("id") Long id){
-        return cyclistService.findCyclistById(id);
+    public ResponseEntity<Optional<Cyclist>> getCyclistByID(@PathVariable("id") Long id){
+        var cyclistFound = cyclistService.findCyclistById(id);
+        if(!cyclistFound.isPresent()) return new ResponseEntity<Optional<Cyclist>>(HttpStatus.NOT_FOUND);
+        return new ResponseEntity<Optional<Cyclist>>(cyclistFound, HttpStatus.OK);
     }
 
     @PutMapping(path = "/{id}")
-    public Cyclist updateCyclistById(@PathVariable("id") Long id, @RequestBody Cyclist cyclistUpdated){
-        return cyclistService.findCyclistById(id)
+    public ResponseEntity<String> updateCyclistById(@PathVariable("id") Long id, @RequestBody Cyclist cyclistUpdated){
+        var cyclistUpdate = cyclistService.findCyclistById(id)
                 .map(cyclist ->{
                     cyclist.setName_cyclist(cyclistUpdated.getName_cyclist());
                     cyclist.setNumber_shirt(cyclistUpdated.getNumber_shirt());
@@ -50,5 +63,6 @@ public class CyclistController {
                     cyclistUpdated.setId_cyclist(id);
                     return cyclistService.saveCyclist(cyclistUpdated);
                 });
+        return new ResponseEntity<String>("registroactualizado", HttpStatus.OK);
     }
 }

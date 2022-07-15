@@ -3,6 +3,8 @@ package com.sofka.project.TDF.controller;
 import com.sofka.project.TDF.model.Team;
 import com.sofka.project.TDF.service.TeamService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,23 +19,32 @@ public class TeamController {
     private TeamService teamService;
 
     @GetMapping()
-    public List<Team> getAllTeams(){
-        return teamService.getAllTeams();
+    public ResponseEntity<List<Team>> getAllTeams(){
+        var teams = teamService.getAllTeams();
+        return new ResponseEntity<List<Team>>(teams, HttpStatus.OK);
     }
 
     @PostMapping()
-    public Team createTeam(@RequestBody Team team){
-        return teamService.saveTeam(team);
+    public ResponseEntity<Team> createTeam(@RequestBody Team team){
+        var teamcreated = teamService.saveTeam(team);
+        return new ResponseEntity<Team>(teamcreated, HttpStatus.CREATED);
     }
 
     @DeleteMapping(path = "/{id}")
-    public void deleteTeam(@PathVariable("id")  Long id){
-        teamService.deleteTeam(id);
+    public ResponseEntity<Team> deleteTeam(@PathVariable("id")  Long id){
+        try {
+            teamService.deleteTeam(id);
+            return new ResponseEntity<Team>(HttpStatus.OK);
+        }catch(Exception e){
+            return new ResponseEntity<Team>(HttpStatus.NOT_FOUND);
+        }
     }
 
     @GetMapping(path = "/{id}")
-    public Optional<Team> getTeamByID(@PathVariable("id") Long id){
-        return teamService.findTeamById(id);
+    public ResponseEntity<Optional<Team>> getTeamByID(@PathVariable("id") Long id){
+        var teamFound =  teamService.findTeamById(id);
+        if(!teamFound.isPresent()) return new ResponseEntity<Optional<Team>>(HttpStatus.NOT_FOUND);
+        return new ResponseEntity<Optional<Team>>(teamFound, HttpStatus.OK);
     }
 
     @PutMapping(path = "/{id}")
